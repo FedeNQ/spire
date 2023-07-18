@@ -85,8 +85,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        num_runners: [5]
-        runner_id: [1, 2, 3, 4, 5]
+        num_runners: [2]
+        runner_id: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
