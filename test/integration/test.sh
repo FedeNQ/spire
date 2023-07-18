@@ -14,7 +14,7 @@ if [[ -n $1 ]]; then
         SUITES=$@
 fi
 
-export KUBECTLVERSION=v1.25.3
+export KUBECTLVERSION="v1.25.3"
 
 ignore_suites=(${IGNORE_SUITES})
 echo "Testing $SUITES"
