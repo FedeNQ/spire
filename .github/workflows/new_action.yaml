@@ -127,4 +127,4 @@ jobs:
           THIS_RUNNER: ${{ matrix.runner_id }}
           TERM: dumb
           CICD_TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
-        run: ./.github/workflows/scripts/split.sh | xargs ./test/integration/test.sh
+        run: ./.github/workflows/scripts/split.sh | xargs ./test/integration/test-k8s.sh
