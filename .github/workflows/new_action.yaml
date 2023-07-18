@@ -121,6 +121,8 @@ jobs:
         run: |
           tar xvf images.tar.gz
           make load-images
+      - name: Set executable permission for script
+        run: chmod +x ./test/integration/test-k8s.sh
       - name: Run integration tests
         env:
           NUM_RUNNERS: ${{ matrix.num_runners }}
