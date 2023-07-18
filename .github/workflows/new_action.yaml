@@ -1,0 +1,32 @@
+name: K8s test
+on:
+  pull_request: {}
+  workflow_dispatch: {}
+env:
+  GO_VERSION: 1.20.5
+permissions:
+  contents: read
+
+jobs:
+  cache-deps:
+    name: cache-deps (linux)
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Setup go
+        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Setup dep cache
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      - name: Pull go deps
+        run: go mod download
