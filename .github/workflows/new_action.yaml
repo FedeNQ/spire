@@ -75,17 +75,23 @@ jobs:
   build-matrix:
     name: Build matrix
     runs-on: ubuntu-20.04
-    needs: [cache-deps, images]
+    needs: [cache-deps]
     permissions:
       contents: read
     steps:
-      - name: List all
-        run: ls -R
+      - name: Verify array.txt
+        run: |
+          if [ -f ./.github/tests/array.txt ]; then
+            echo "array.txt exists"
+            cat ./.github/tests/array.txt
+          else
+            echo "array.txt not found"
+          fi
       - id: set-matrix
         name: Collect versions
         run: |
           # Read the content of the array.txt file
-          IFS= readarray -t matrix_lines < ./.github/tests/array.txt
+          IFS= readarray -t matrix_lines < ${{ github.action_path }}/.github/workflows/array.txt
           # Convert each line of the file into a JSON array element
           json_array="["
           for line in "${matrix_lines[@]}"; do
