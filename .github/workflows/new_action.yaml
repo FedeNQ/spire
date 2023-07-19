@@ -79,6 +79,10 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Check current directory
+        run: |
+          pwd
+          ls -a
       - id: set-matrix
         name: Collect versions
         run: |
