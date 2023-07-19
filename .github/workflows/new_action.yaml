@@ -87,10 +87,8 @@ jobs:
       matrix:
          num_runners: [1]
          runner_id: [1]
-        #  kubeversions: [v1.21.1, v1.25.3]
-        #  k8sversions: ['kindest/node:v1.21.1', 'kindest/node:v1.25.3']
-        #  kindversions: [v0.11.1, v0.17.0]
-         test: [[v1.21.1,'kindest/node:v1.21.1',v0.11.1],[v1.25.3,'kindest/node:v1.25.3',v0.17.0]]
+         #Test elements should be added as [KubeCTLVersion, K8s-image, KindVersion]
+         test: [[v1.21.1,'kindest/node:v1.21.1',v0.11.1],[v1.25.3,'kindest/node:v1.25.3',v0.17.0],]
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
