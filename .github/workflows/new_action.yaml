@@ -89,7 +89,7 @@ jobs:
           # Convert each line of the file into a JSON array element
           json_array="["
           for line in "${matrix_lines[@]}"; do
-            json_array+="[$line],"
+            json_array+="$line,"
           done
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
