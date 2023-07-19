@@ -86,7 +86,7 @@ jobs:
       fail-fast: false
       matrix:
          kubeversions: [v1.21.1, v1.25.3]
-         k8sversions: [kindest/node:v1.21.1, kindest/node:v1.25.3]
+         k8sversions: ['kindest/node:v1.21.1', 'kindest/node:v1.25.3']
          kindversions: [v0.11.1, v0.17.0]
     steps:
       - name: Checkout
