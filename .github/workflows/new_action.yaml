@@ -72,11 +72,32 @@ jobs:
           name: images
           path: images.tar.gz
 
+  build-matrix:
+    name: Build matrix
+    runs-on: ubuntu-20.04
+    needs: [cache-deps]
+    steps:
+      - id: set-matrix
+        name: Collect versions
+        run: |
+          # Read the content of the array.txt file
+          IFS= readarray -t matrix_lines < array.txt
+          # Convert each line of the file into a JSON array element
+          json_array="["
+          for line in "${matrix_lines[@]}"; do
+            json_array+="[$line],"
+          done
+          json_array="${json_array%,}]"
+          # Output the generated JSON array to GITHUB_OUTPUT
+          echo "test=$json_array" >> $GITHUB_OUTPUT
+          echo "Collected tests: $json_array"
+    outputs:
+      test: ${{ steps.set-matrix.outputs.test }}
   
   integration:
     name: integration (linux)
     runs-on: ubuntu-20.04
-    needs: [cache-deps, images]
+    needs: [cache-deps, images, build-matrix]
     timeout-minutes: 45
 
     permissions:
@@ -88,7 +109,7 @@ jobs:
          num_runners: [1]
          runner_id: [1]
          #Test elements should be added as [KubeCTLVersion, K8s-image, KindVersion]
-         test: [[v1.21.1,'kindest/node:v1.21.1',v0.11.1],[v1.25.3,'kindest/node:v1.25.3',v0.17.0],]
+         test: ${{ fromJson(needs.build-matrix.outputs.test) }}
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
