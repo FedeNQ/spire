@@ -81,22 +81,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      - name: Verify .github/workflows directory
-        run: |
-          ls -R ./.github/workflows
-      - name: Verify array.txt
-        run: |
-          if [ -f ./.github/tests/array.txt ]; then
-            echo "array.txt exists"
-            cat ./.github/tests/array.txt
-          else
-            echo "array.txt not found"
-          fi
       - id: set-matrix
         name: Collect versions
         run: |
           # Read the content of the array.txt file
-          IFS= readarray -t matrix_lines < ${{ github.action_path }}/.github/workflows/array.txt
+          IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
           # Convert each line of the file into a JSON array element
           json_array="["
           for line in "${matrix_lines[@]}"; do
