@@ -79,6 +79,9 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Verify .github/workflows directory
+        run: |
+          ls -R ./.github/workflows
       - name: Verify array.txt
         run: |
           if [ -f ./.github/tests/array.txt ]; then
