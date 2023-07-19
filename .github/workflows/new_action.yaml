@@ -76,6 +76,8 @@ jobs:
     name: Build matrix
     runs-on: ubuntu-20.04
     needs: [cache-deps]
+    permissions:
+      contents: read
     steps:
       - id: set-matrix
         name: Collect versions
