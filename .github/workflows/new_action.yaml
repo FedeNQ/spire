@@ -85,6 +85,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+         num_runners: [1]
+         runner_id: [1]
          kubeversions: [v1.21.1, v1.25.3]
          k8sversions: ['kindest/node:v1.21.1', 'kindest/node:v1.25.3']
          kindversions: [v0.11.1, v0.17.0]
@@ -126,6 +128,8 @@ jobs:
         run: chmod +x ./test/integration/test-k8s.sh
       - name: Run integration tests
         env:
+          NUM_RUNNERS: ${{ matrix.num_runners }}
+          THIS_RUNNER: ${{ matrix.runner_id }}
           KUBECTLVERSION: ${{ matrix.kuberversions }}
           K8SIMAGE: ${{ matrix.k8sversions }}
           KINDVERSION: ${{ matrix.kindversions }}
