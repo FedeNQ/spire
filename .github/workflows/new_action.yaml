@@ -130,7 +130,7 @@ jobs:
         env:
           NUM_RUNNERS: ${{ matrix.num_runners }}
           THIS_RUNNER: ${{ matrix.runner_id }}
-          KUBECTLVERSION: ${{ matrix.kuberversions }}
+          KUBECTLVERSION: ${{ matrix.kubeversions }}
           K8SIMAGE: ${{ matrix.k8sversions }}
           KINDVERSION: ${{ matrix.kindversions }}
           TERM: dumb
