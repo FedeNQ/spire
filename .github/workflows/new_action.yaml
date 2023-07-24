@@ -90,8 +90,11 @@ jobs:
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-          echo "row=$(printf '%s' "$new_version_row" | jq -c)"  >> $GITHUB_ENV
+          echo "row=$(echo $new_version_row | jq -c)"  >> $GITHUB_OUTPUT
+          echo "row=$new_version_row" >> $GITHUB_ENV
           echo "Collected row: $new_version_row"
+    outputs:
+      row: ${{ steps.get-latest-release.outputs.row }}
 
   
   build-matrix:
@@ -113,11 +116,14 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="${row},"
+          json_array+="${{ needs.get-latest-k8s.outputs.row }}"
           json_array="${json_array%,}]"
-          # Output the generated JSON array to GITHUB_OUTPUT
+          echo "${{ needs.get-latest-k8s.outputs.row }},"
+          echo "${row}"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
+    env:
+      row: ${{ steps.get-latest-release.outputs.row }}
     outputs:
       test: ${{ steps.set-matrix.outputs.test }}
   
