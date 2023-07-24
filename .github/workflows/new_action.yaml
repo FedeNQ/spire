@@ -116,11 +116,9 @@ jobs:
             json_array+="$line,"
           done
           # json_array+="${{ needs.get-latest-k8s.outputs.row }}"
-          json_array+="\"${{ needs.get-latest-k8s.outputs.row }}\","
+          json_array+="${row},"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
-
-          
           echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
