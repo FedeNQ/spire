@@ -98,9 +98,8 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="${{ env.new_version_row }}"
+          json_array+="$new_version_row"
           json_array="${json_array%,}]"
-          echo "${{ env.new_version_row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
