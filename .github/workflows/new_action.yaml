@@ -92,7 +92,7 @@ jobs:
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
           echo "row=$(printf '%s' "$new_version_row" | jq -c)"  >> $GITHUB_ENV
           echo "Collected row: $new_version_row"
-    outputs:
+    env:
       row: ${{ steps.get-latest-release.outputs.row }}
 
   
