@@ -71,16 +71,16 @@ jobs:
         with:
           name: images
           path: images.tar.gz
-
-
-  get-latest-k8s:
-    name: get latest k8s
+  
+  build-matrix:
+    name: Build matrix
     runs-on: ubuntu-20.04
-
+    needs: [cache-deps]
+    permissions:
+      contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Get Latest Kindest Node Release
         id: get-latest-release
         run: |
@@ -90,28 +90,10 @@ jobs:
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-          echo "row=$(echo $new_version_row | jq -c)"  >> $GITHUB_OUTPUT
-          echo "Collected row: $new_version_row"
-    outputs:
-      row: ${{ steps.get-latest-release.outputs.row }}
-  
-  build-matrix:
-    name: Build matrix
-    runs-on: ubuntu-20.04
-    needs: [cache-deps, get-latest-k8s]
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+          echo "new_version_row=$new_version_row" >> $GITHUB_ENV
       - id: set-matrix
         name: Collect versions
         run: |
-          row_json="${{ needs.get-latest-k8s.outputs.row }}"
-          echo "${{ needs.get-latest-k8s.outputs.row }}"
-          echo "Row JSON: $row_json"
-          row_json2=$(printf '%s' "${{ needs.get-latest-k8s.outputs.row }}")
-          echo "Row JSON2: $row_json2"
           k8s_version=$(echo "$row_json" | jq -r '.[0]')
           k8s_image=$(echo "$row_json" | jq -r '.[1]')
           kind_version=$(echo "$row_json" | jq -r '.[2]')
@@ -124,7 +106,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+='$row_json'
+          json_array+="$new_version_row"
           json_array="${json_array%,}]"
           echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
