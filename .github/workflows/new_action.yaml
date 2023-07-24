@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Latest Kindest Node Release
-        id: get-release
+        id: get-latest-release
         run: |
           k8s_release_info=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases/latest)
           kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
