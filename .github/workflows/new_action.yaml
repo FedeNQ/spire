@@ -98,6 +98,8 @@ jobs:
       - name: Test Print row
         run: |
           echo "row: $row" # Print the value of the row variable
+          echo "GITHUB_ENV:"
+          cat $GITHUB_ENV
 
   
   build-matrix:
