@@ -115,7 +115,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="${{ fromJson(needs.get-latest-k8s.outputs.row) }}"
+          json_array+="\"${{ fromJson(needs.get-latest-k8s.outputs.row) }}\""
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
           echo "${{ needs.get-latest-k8s.outputs.row }},"
