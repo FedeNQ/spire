@@ -89,13 +89,11 @@ jobs:
           k8s_version=$(echo "$k8s_release_info" | jq -r '.tag_name')
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
-          echo "k8s_version=$k8s_version"  >> $GITHUB_OUTPUT
-          echo "k8s_image=$k8s_image"  >> $GITHUB_OUTPUT
-          echo "kind_version=$kind_version"  >> $GITHUB_OUTPUT
+          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
+          echo "row=$(echo $new_version_row | jq -c)"  >> $GITHUB_OUTPUT
+          echo "Collected row: $new_version_row"
     outputs:
-      k8s_version: ${{ steps.get-latest-release.outputs.k8s_version }}
-      k8s_image: ${{ steps.get-latest-release.outputs.k8s_image }}
-      kind_version: ${{ steps.get-latest-release.outputs.kind_version }}
+      row: ${{ steps.get-latest-release.outputs.row }}
   
   build-matrix:
     name: Build matrix
@@ -109,6 +107,12 @@ jobs:
       - id: set-matrix
         name: Collect versions
         run: |
+          k8s_version=${{ needs.get-latest-release.outputs.row[0] }}
+          k8s_image=${{ needs.get-latest-release.outputs.row[1] }}
+          kind_version=${{ needs.get-latest-release.outputs.row[2] }}
+          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
+
+
           # Read the content of the array.txt file
           IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
           # Convert each line of the file into a JSON array element
@@ -116,9 +120,9 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          new_version_row="[\"${{ needs.get-latest-k8s.outputs.k8s_version }}\",\"${{ needs.get-latest-k8s.outputs.k8s_image }}\",\"${{ needs.get-latest-k8s.outputs.kind_version}}"]"
           json_array+=$new_version_row
           json_array="${json_array%,}]"
+          echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
