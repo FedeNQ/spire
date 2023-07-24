@@ -72,6 +72,30 @@ jobs:
           name: images
           path: images.tar.gz
 
+
+  get-latest-k8s:
+    name: get latest 8ks
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Latest Kindest Node Release
+        id: get-release
+        run: |
+          release_info=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases/latest)
+          k8s_version=$(echo "$release_info" | jq -r '.tag_name')
+          k8s_image="kindest/node:$k8s_version"
+          kind_version=$(echo "$release_info" | jq -r '.name')
+          matrix_string="[$k8s_version,\"$k8s_image\",\"$kind_version\"]"
+          echo "matrix=$matrix_string" >> $GITHUB_ENV
+
+      - name: Show Matrix
+        run: |
+          echo "Generated Matrix: ${{ env.matrix }}"
+
+  
   build-matrix:
     name: Build matrix
     runs-on: ubuntu-20.04
