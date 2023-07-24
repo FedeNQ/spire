@@ -93,7 +93,7 @@ jobs:
           echo "row=$new_version_row" >> $GITHUB_OUTPUT
           echo "Collected row: $new_version_row"
     outputs:
-      test: ${{ steps.set-matrix.outputs.row }}
+      test: ${{ steps.get-latest-k8s.outputs.row }}
 
   
   build-matrix:
