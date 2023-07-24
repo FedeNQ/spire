@@ -95,6 +95,9 @@ jobs:
           echo "Collected row: $new_version_row"
     # outputs:
     #   row: ${{ steps.get-latest-release.outputs.row }}
+      - name: Test Print row
+        run: |
+          echo "row: $row" # Print the value of the row variable
 
   
   build-matrix:
