@@ -108,6 +108,7 @@ jobs:
         name: Collect versions
         run: |
           row_json="${{ needs.get-latest-k8s.outputs.row }}"
+          echo "Collected row: $row_json"
           k8s_version=$(echo "$row_json" | jq -r '.[0]')
           k8s_image=$(echo "$row_json" | jq -r '.[1]')
           kind_version=$(echo "$row_json" | jq -r '.[2]')
