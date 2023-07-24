@@ -107,6 +107,7 @@ jobs:
       - id: set-matrix
         name: Collect versions
         run: |
+          echo "${{ needs.get-latest-k8s.outputs.row[0] }}"
           k8s_version=${{ needs.get-latest-k8s.outputs.row[0] }}
           k8s_image=${{ needs.get-latest-k8s.outputs.row[1] }}
           kind_version=${{ needs.get-latest-k8s.outputs.row[2] }}
