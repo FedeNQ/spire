@@ -110,6 +110,8 @@ jobs:
           row_json="${{ needs.get-latest-k8s.outputs.row }}"
           echo "${{ needs.get-latest-k8s.outputs.row }}"
           echo "Row JSON: $row_json"
+          row_json2=$(printf '%s' "${{ needs.get-latest-k8s.outputs.row }}")
+          echo "Row JSON2: $row_json2"
           k8s_version=$(echo "$row_json" | jq -r '.[0]')
           k8s_image=$(echo "$row_json" | jq -r '.[1]')
           kind_version=$(echo "$row_json" | jq -r '.[2]')
