@@ -84,16 +84,17 @@ jobs:
       - name: Get Latest Kindest Node Release
         id: get-release
         run: |
-          release_info=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases/latest)
-          k8s_version=$(echo "$release_info" | jq -r '.tag_name')
+          k8s_release_info=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases/latest)
+          kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
+          k8s_version=$(echo "$k8s_release_info" | jq -r '.tag_name')
           k8s_image="kindest/node:$k8s_version"
-          kind_version=$(echo "$release_info" | jq -r '.name')
-          matrix_string="[$k8s_version,\"$k8s_image\",\"$kind_version\"]"
-          echo "matrix=$matrix_string" >> $GITHUB_ENV
+          kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
+          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
+          echo "row=$new_version_row" >> $GITHUB_ENV
 
-      - name: Show Matrix
+      - name: Show new row
         run: |
-          echo "Generated Matrix: ${{ env.matrix }}"
+          echo "Generated row: ${{ env.row}}"
 
   
   build-matrix:
