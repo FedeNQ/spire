@@ -108,6 +108,8 @@ jobs:
       - id: set-matrix
         name: Collect versions
         run: |
+          echo "${{ fromJson(needs.get-latest-k8s.outputs.row) }}"
+          echo "${{ toJson(fromJson(needs.get-latest-k8s.outputs.row)) }}"
           # Read the content of the array.txt file
           IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
           # Convert each line of the file into a JSON array element
@@ -115,7 +117,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="\"${{ fromJson(needs.get-latest-k8s.outputs.row) }}\""
+          json_array+="${{ toJson(fromJson(needs.get-latest-k8s.outputs.row)) }}"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
           echo "${{ needs.get-latest-k8s.outputs.row }},"
