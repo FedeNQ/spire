@@ -81,22 +81,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      - name: Get Latest Kindest Node Release
-        id: get-latest-release
+      - id: set-matrix
+        name: Collect versions
         run: |
           k8s_release_info=$(curl -s https://api.github.com/repos/kubernetes/kubernetes/releases/latest)
           kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
           k8s_version=$(echo "$k8s_release_info" | jq -r '.tag_name')
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
-          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-          echo "new_version_row=$new_version_row" >> $GITHUB_ENV
-      - id: set-matrix
-        name: Collect versions
-        run: |
-          k8s_version=$(echo "$row_json" | jq -r '.[0]')
-          k8s_image=$(echo "$row_json" | jq -r '.[1]')
-          kind_version=$(echo "$row_json" | jq -r '.[2]')
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
 
           # Read the content of the array.txt file
