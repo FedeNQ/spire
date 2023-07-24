@@ -90,11 +90,10 @@ jobs:
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-          echo "row=$new_version_row" >> $GITHUB_ENV
-
-      - name: Show new row
-        run: |
-          echo "Generated row: ${{ env.row}}"
+          echo "row=$new_version_row" >> $GITHUB_OUTPUT
+          echo "Collected row: $new_version_row"
+    outputs:
+      test: ${{ steps.set-matrix.outputs.row }}
 
   
   build-matrix:
