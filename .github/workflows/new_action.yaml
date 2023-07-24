@@ -92,8 +92,6 @@ jobs:
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
           echo "row=$(printf '%s' "$new_version_row" | jq -c)"  >> $GITHUB_ENV
           echo "Collected row: $new_version_row"
-    env:
-      row: ${{ steps.get-latest-release.outputs.row }}
 
   
   build-matrix:
@@ -118,7 +116,6 @@ jobs:
           json_array+="${row},"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
-          echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
