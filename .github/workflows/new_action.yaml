@@ -74,7 +74,7 @@ jobs:
 
 
   get-latest-k8s:
-    name: get latest 8ks
+    name: get latest k8s
     runs-on: ubuntu-20.04
 
     steps:
@@ -100,7 +100,7 @@ jobs:
   build-matrix:
     name: Build matrix
     runs-on: ubuntu-20.04
-    needs: [cache-deps]
+    needs: [cache-deps, get-latest-k8s]
     permissions:
       contents: read
     steps:
@@ -116,6 +116,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
+          json_array+="${{ needs.get-latest-k8s.outputs.row }},"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
           echo "test=$json_array" >> $GITHUB_OUTPUT
