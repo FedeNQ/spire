@@ -93,7 +93,7 @@ jobs:
           echo "row=$new_version_row" >> $GITHUB_OUTPUT
           echo "Collected row: $new_version_row"
     outputs:
-      test: ${{ steps.get-latest-k8s.outputs.row }}
+      test: ${{ steps.get-latest-release.outputs.row }}
 
   
   build-matrix:
@@ -115,7 +115,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="${{ needs.get-latest-k8s.outputs.row }},"
+          json_array+="${{ needs.get-latest-release.outputs.row }},"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
           echo "test=$json_array" >> $GITHUB_OUTPUT
