@@ -115,10 +115,13 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+="${{ needs.get-latest-k8s.outputs.row }}"
+          # json_array+="${{ needs.get-latest-k8s.outputs.row }}"
+          json_array+="\"${{ needs.get-latest-k8s.outputs.row }}\","
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
-          echo "${{ needs.get-latest-release.outputs.row }},"
+
+          
+          echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
