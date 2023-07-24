@@ -109,10 +109,10 @@ jobs:
         run: |
           row_json="${{ needs.get-latest-k8s.outputs.row }}"
           echo "Collected row: $row_json"
-          k8s_version=$(echo "$row_json" | jq -r '.[0]')
-          k8s_image=$(echo "$row_json" | jq -r '.[1]')
-          kind_version=$(echo "$row_json" | jq -r '.[2]')
-          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
+          # k8s_version=$(echo "$row_json" | jq -r '.[0]')
+          # k8s_image=$(echo "$row_json" | jq -r '.[1]')
+          # kind_version=$(echo "$row_json" | jq -r '.[2]')
+          # new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
 
 
           # Read the content of the array.txt file
@@ -122,7 +122,7 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          json_array+=$new_version_row
+          json_array+=$row_json
           json_array="${json_array%,}]"
           echo "${{ needs.get-latest-k8s.outputs.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
