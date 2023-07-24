@@ -89,18 +89,13 @@ jobs:
           k8s_version=$(echo "$k8s_release_info" | jq -r '.tag_name')
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
-          new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-          # echo "row=$(echo $new_version_row | jq -c)"  >> $GITHUB_OUTPUT
-          echo "row=$(echo $new_version_row | jq -c)" >> $GITHUB_ENV
-          echo "Collected row: $new_version_row"
-    # outputs:
-    #   row: ${{ steps.get-latest-release.outputs.row }}
-      - name: Test Print row
-        run: |
-          echo "row: $row" # Print the value of the row variable
-          echo "GITHUB_ENV:"
-          cat $GITHUB_ENV
-
+          echo "k8s_version=$k8s_version"  >> $GITHUB_OUTPUT
+          echo "k8s_image=$k8s_image"  >> $GITHUB_OUTPUT
+          echo "kind_version=$kind_version"  >> $GITHUB_OUTPUT
+    outputs:
+      k8s_version: ${{ steps.get-latest-release.outputs.k8s_version }}
+      k8s_image: ${{ steps.get-latest-release.outputs.k8s_image }}
+      kind_version: ${{ steps.get-latest-release.outputs.kind_version }}
   
   build-matrix:
     name: Build matrix
@@ -121,11 +116,9 @@ jobs:
           for line in "${matrix_lines[@]}"; do
             json_array+="$line,"
           done
-          # json_array+="${{ needs.get-latest-k8s.outputs.row }}"
-          json_array+="${{ env.row }}"  # Access the JSON-formatted string from the environment variable
+          new_version_row="[\"${{ needs.get-latest-k8s.outputs.k8s_version }}\",\"${{ needs.get-latest-k8s.outputs.k8s_image }}\",\"${{ needs.get-latest-k8s.outputs.kind_version}}"]"
+          json_array+=$new_version_row
           json_array="${json_array%,}]"
-          # echo "${{ needs.get-latest-k8s.outputs.row }},"
-          echo "${{ env.row }},"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
