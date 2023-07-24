@@ -118,6 +118,7 @@ jobs:
           json_array+="${{ needs.get-latest-release.outputs.row }},"
           json_array="${json_array%,}]"
           # Output the generated JSON array to GITHUB_OUTPUT
+          echo "${{ needs.get-latest-release.outputs.row }}"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
