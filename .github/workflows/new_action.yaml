@@ -90,16 +90,27 @@ jobs:
           k8s_image="kindest/node:$k8s_version"
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
           new_version_row="[\"$k8s_version\",\"$k8s_image\",\"$kind_version\"]"
-
+          new_array=$(curl -s "https://hub.docker.com/v2/repositories/kindest/node/tags" | jq '.results[].name')
+          
           # Read the content of the array.txt file
           IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
           # Convert each line of the file into a JSON array element
           json_array="["
-          for line in "${matrix_lines[@]}"; do
-            json_array+="$line,"
+          # for line in "${matrix_lines[@]}"; do
+          # json_array+="$line,"
+          # done
+          # json_array+="$new_version_row"
+
+
+          readarray -t new_array_elements <<< "$new_array"
+          # Iterate over the new_array_elements
+          for element in "${new_array_elements[@]}"; do
+              element2=${element#"\""}
+              element2=${element2%"\""}
+              k8s_image="kindest/node:$element2"
+              new_version_row="[$element,\"$k8s_image\",\"$kind_version\"]"
+              json_array+="$new_version_row,"
           done
-          json_array+="$new_version_row"
-          json_array="${json_array%,}]"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
