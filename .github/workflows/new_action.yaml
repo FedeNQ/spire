@@ -111,6 +111,7 @@ jobs:
               new_version_row="[$element,\"$k8s_image\",\"$kind_version\"]"
               json_array+="$new_version_row,"
           done
+          json_array="${json_array%,}]"
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
     outputs:
