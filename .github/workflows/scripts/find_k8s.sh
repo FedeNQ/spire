@@ -1,9 +1,24 @@
  #!/usr/bin/env bash
           kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
-          tags=$(curl -s "https://hub.docker.com/v2/repositories/kindest/node/tags" | jq '.results[].name')
+          # Currently we're taking the first 5 pages of the URL
           
-          readarray -t tags_sorted < <(printf '%s\n' "$tags" | sort -V)
+          all_tags=()
+          # Currently we're taking the first 5 pages of the URL
+            for ((page=1; page<=5; page++)); do
+                # Fetch tags for the current page using curl and jq
+                tags=$(curl -s "https://hub.docker.com/v2/repositories/kindest/node/tags?page=$page" | jq -r '.results[].name')
+
+                # Check if the tags variable is empty
+                if [[ -z "$tags" ]]; then
+                    break
+                fi
+
+                # Append the current page tags to the all_tags array
+                all_tags+=( $tags )
+            done
+          
+          readarray -t tags_sorted < <(printf '%s\n' "${all_tags[@]}" | sort -V)
 
           declare -A tags_map
           for element in "${tags_sorted[@]}"; do
@@ -11,16 +26,22 @@
             # Extract the "X.XX" part as the key for the map
             key="${element%.*}"
             key="${key//\"}"
+            # Check if the key is greater than or equal to "1.20"
+            if [[ $(printf "$key\nv1.20" | sort -V | head -n1) == "v1.20" ]]; then
+                # Extract the "YY" part as the value for the map
+                value="${element##*.}"
+                value="${value//\"}"
 
-            # Extract the "YY" part as the value for the map
-            value="${element##*.}"
-            value="${value//\"}"
-
-            # Because tags_sorted is sorted, we just need to keep the last value seen per key
-            tags_map[$key]=$value
+                # Check if the value size is equal to or lower than 2
+                if (( ${#value} <= 2 )); then
+                    # Add the key-value pair to the tags_map
+                    tags_map["$key"]=$value
+                fi
+            fi
            done
 
           # Read the content of the array.txt file
+          # Currently we just have one row as example, add more if we need to test a specifically version
           IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
 
           # Convert each line of the file into a JSON array element
