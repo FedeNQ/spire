@@ -23,6 +23,14 @@
           declare -A tags_map
           for element in "${tags_sorted[@]}"; do
             # Element is in this form: "X.XX.YY"
+            # If not, continue
+            num_dots=$(echo "$element" | grep -o '\.' | wc -l)
+
+            # Continue to the next iteration if the number of dots is not equal to 2
+            if [[ "$num_dots" -ne 2 ]]; then
+                continue
+            fi
+
             # Extract the "X.XX" part as the key for the map
             key="${element%.*}"
             key="${key//\"}"
@@ -30,13 +38,7 @@
             if [[ $(printf "$key\nv1.20" | sort -V | head -n1) == "v1.20" ]]; then
                 # Extract the "YY" part as the value for the map
                 value="${element##*.}"
-                value="${value//\"}"
-
-                # Check if the value size is equal to or lower than 2
-                if (( ${#value} <= 2 )); then
-                    # Add the key-value pair to the tags_map
-                    tags_map["$key"]=$value
-                fi
+                tags_map["$key"]=$value
             fi
            done
 
