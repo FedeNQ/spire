@@ -84,7 +84,7 @@ jobs:
       - id: set-matrix
         name: Collect versions
         run: |
-          json_array=$(bash scripts/find_k8s.sh)
+          json_array=$(bash ./.github/workflows/scripts/find_k8s.sh)
           echo "test=$json_array" >> $GITHUB_OUTPUT
           echo "Collected tests: $json_array"
 
