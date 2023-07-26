@@ -21,7 +21,7 @@
            done
 
           # Read the content of the array.txt file
-          IFS= readarray -t matrix_lines < ../../k8s-version/array.txt
+          IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
 
           # Convert each line of the file into a JSON array element
           json_array="["
