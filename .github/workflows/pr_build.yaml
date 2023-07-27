@@ -242,7 +242,7 @@ jobs:
   integration:
     name: integration (linux)
     runs-on: ubuntu-20.04
-    needs: [cache-deps, images, build-matrix]
+    needs: [cache-deps, images]
     timeout-minutes: 45
 
     permissions:
