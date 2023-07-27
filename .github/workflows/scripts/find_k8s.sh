@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
           kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
           # Currently we're taking the first 5 pages of the URL
@@ -15,7 +15,7 @@
                 fi
 
                 # Append the current page tags to the all_tags array
-                all_tags+=( $tags )
+                all_tags+=( "$tags" )
             done
           
           readarray -t tags_sorted < <(printf '%s\n' "${all_tags[@]}" | sort -V)
@@ -35,7 +35,7 @@
             key="${element%.*}"
             key="${key//\"}"
             # Check if the key is greater than or equal to "1.21"
-            if [[ $(printf "$key\nv1.21" | sort -V | head -n1) == "v1.21" ]]; then
+            if [[ $(printf "%s\nv1.21" "$key" | sort -V | head -n1) == "v1.21" ]]; then
                 # Extract the "YY" part as the value for the map
                 value="${element##*.}"
                 tags_map["$key"]=$value
@@ -62,4 +62,4 @@
 
           json_array="${json_array%,}]"
 
-echo ${json_array}
+echo "${json_array}"
