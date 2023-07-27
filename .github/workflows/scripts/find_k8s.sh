@@ -34,8 +34,8 @@
             # Extract the "X.XX" part as the key for the map
             key="${element%.*}"
             key="${key//\"}"
-            # Check if the key is greater than or equal to "1.20"
-            if [[ $(printf "$key\nv1.20" | sort -V | head -n1) == "v1.20" ]]; then
+            # Check if the key is greater than or equal to "1.21"
+            if [[ $(printf "$key\nv1.21" | sort -V | head -n1) == "v1.21" ]]; then
                 # Extract the "YY" part as the value for the map
                 value="${element##*.}"
                 tags_map["$key"]=$value
