@@ -105,7 +105,6 @@ jobs:
       matrix:
          num_runners: [1]
          runner_id: [1]
-         #Test elements should be added as [KubeCTLVersion, K8s-image, KindVersion]
          test: ${{ fromJson(needs.build-matrix.outputs.test) }}
     steps:
       - name: Checkout

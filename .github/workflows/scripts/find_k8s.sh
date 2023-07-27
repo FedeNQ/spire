@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
           kind_release_info=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest)
           kind_version=$(echo "$kind_release_info" | jq -r '.tag_name')
-          # Currently we're taking the first 5 pages of the URL
           
           all_tags=()
           # Currently we're taking the first 5 pages of the URL
@@ -43,7 +42,8 @@
            done
 
           # Read the content of the array.txt file
-          # Currently we just have one row as example, add more if we need to test a specifically version
+          # Currently we just have one row as example, add more if we need to test a specific version
+          # Test elements should be added as [KubeCTLVersion, K8s-image, KindVersion]
           IFS= readarray -t matrix_lines < ./.github/k8s-version/array.txt
 
           # Convert each line of the file into a JSON array element
